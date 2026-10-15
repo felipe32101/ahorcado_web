@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Logo del juego del ahorcado">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#1F3864"/>
+  <path d="M14 54h24" stroke="#F2F2F2" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M26 54V14" stroke="#F2F2F2" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M26 14h18" stroke="#F2F2F2" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M42 14v8" stroke="#FCD116" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <circle cx="42" cy="27" r="5" fill="none" stroke="#FCD116" stroke-width="3"/>
+  <path d="M42 32v10" stroke="#FCD116" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M42 35l-6 5M42 35l6 5" stroke="#FCD116" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M42 42l-5 8M42 42l5 8" stroke="#FCD116" stroke-width="3" stroke-linecap="round" fill="none"/>
+</svg>

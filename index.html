@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Juego del Ahorcado de las capitales y la geografía de Colombia. Recurso didáctico 100% web, sin servidor ni instalaciones." />
+  <meta name="author" content="Lenguajes de Programación — Proyecto Ahorcado Colombia" />
+  <meta name="theme-color" content="#1F3864" />
+  <title>Ahorcado de las Capitales de Colombia</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <a class="enlace-saltar" href="#contenido">Saltar al contenido principal</a>
+
+  <!-- ============================================================
+       CABECERA: marca, botón de sonido y cambio de tema
+       ============================================================ -->
+  <header class="cabecera">
+    <div class="cabecera__marca">
+      <img class="cabecera__logo" src="assets/img/logo.svg" alt="" width="44" height="44" />
+      <div>
+        <p class="cabecera__eyebrow">Geografía de Colombia</p>
+        <h1 class="cabecera__titulo">Ahorcado de las Capitales</h1>
+      </div>
+    </div>
+
+    <div class="cabecera__controles" role="group" aria-label="Preferencias de la aplicación">
+      <button
+        type="button"
+        id="btn-sonido"
+        class="btn btn--icono"
+        aria-pressed="true"
+        title="Activar o desactivar el sonido">
+        <span class="btn__icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 5 6 9H2v6h4l5 4V5z" />
+            <path class="onda-sonido" d="M15.5 8.5a5 5 0 0 1 0 7" />
+            <path class="onda-sonido" d="M18.5 5.5a9 9 0 0 1 0 13" />
+          </svg>
+        </span>
+        <span class="btn__texto" id="btn-sonido-texto">Sonido: sí</span>
+      </button>
+
+      <button
+        type="button"
+        id="btn-tema"
+        class="btn btn--icono"
+        aria-pressed="false"
+        title="Cambiar entre tema claro y tema oscuro">
+        <span class="btn__icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </svg>
+        </span>
+        <span class="btn__texto" id="btn-tema-texto">Tema: claro</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       CONTENIDO PRINCIPAL
+       ============================================================ -->
+  <main id="contenido" class="principal">
+
+    <!-- ----------------------------------------------------------
+         VISTA 1 — MENÚ PRINCIPAL
+         ------------------------------------------------------- -->
+    <section id="vista-menu" class="vista" aria-labelledby="titulo-menu">
+      <div class="tarjeta tarjeta--presentacion">
+        <h2 id="titulo-menu" class="tarjeta__titulo">¿Listo para adivinar?</h2>
+        <p class="tarjeta__texto">
+          Adivina las <strong>32 capitales departamentales de Colombia</strong>. Elige una región
+          para practicar, escoge tu nivel de dificultad y completa la palabra antes de que se
+          dibuje el ahorcado.
+        </p>
+        <ul class="puntos-rapidos" aria-label="Resumen de reglas">
+          <li><span class="punto punto--verde">+10</span> por letra acertada</li>
+          <li><span class="punto punto--rojo">-5</span> por letra fallada</li>
+          <li><span class="punto punto--azul">6</span> errores y pierdes</li>
+        </ul>
+      </div>
+
+      <form id="form-config" class="tarjeta tarjeta--config" autocomplete="off">
+        <h2 class="tarjeta__titulo">Configura tu partida</h2>
+
+        <!-- Nombre del jugador -->
+        <div class="campo">
+          <label class="campo__etiqueta" for="input-jugador">Tu nombre</label>
+          <input
+            class="campo__control"
+            type="text"
+            id="input-jugador"
+            name="jugador"
+            value="Jugador1"
+            maxlength="24"
+            placeholder="Ej. Maria"
+            aria-describedby="ayuda-jugador" />
+          <p class="campo__ayuda" id="ayuda-jugador">Se usa para guardar tu ranking local.</p>
+        </div>
+
+        <!-- Región geográfica (HU-01) -->
+        <fieldset class="campo campo--grupo">
+          <legend class="campo__etiqueta">Región geográfica</legend>
+          <div class="chips" id="chips-region" role="radiogroup" aria-label="Región geográfica">
+            <label class="chip" data-region="todas">
+              <input type="radio" name="region" value="todas" checked />
+              <span class="chip__etiqueta">Todas</span>
+              <span class="chip__info" aria-hidden="true">32</span>
+            </label>
+            <label class="chip" data-region="andina">
+              <input type="radio" name="region" value="andina" />
+              <span class="chip__etiqueta">Andina</span>
+              <span class="chip__info" aria-hidden="true">12</span>
+            </label>
+            <label class="chip" data-region="caribe">
+              <input type="radio" name="region" value="caribe" />
+              <span class="chip__etiqueta">Caribe</span>
+              <span class="chip__info" aria-hidden="true">7</span>
+            </label>
+            <label class="chip" data-region="pacifica">
+              <input type="radio" name="region" value="pacifica" />
+              <span class="chip__etiqueta">Pacífica</span>
+              <span class="chip__info" aria-hidden="true">2</span>
+            </label>
+            <label class="chip" data-region="orinoquia">
+              <input type="radio" name="region" value="orinoquia" />
+              <span class="chip__etiqueta">Orinoquía</span>
+              <span class="chip__info" aria-hidden="true">4</span>
+            </label>
+            <label class="chip" data-region="amazonia">
+              <input type="radio" name="region" value="amazonia" />
+              <span class="chip__etiqueta">Amazonía</span>
+              <span class="chip__info" aria-hidden="true">6</span>
+            </label>
+            <label class="chip" data-region="insular">
+              <input type="radio" name="region" value="insular" />
+              <span class="chip__etiqueta">Insular</span>
+              <span class="chip__info" aria-hidden="true">1</span>
+            </label>
+          </div>
+
+          <!-- Mapa real de Colombia (Wikimedia Commons) con las capitales marcadas -->
+          <figure class="mapa" id="mapa">
+            <div class="mapa__marco">
+              <img
+                class="mapa__imagen"
+                id="mapa-imagen"
+                src="assets/img/mapa-colombia.svg"
+                alt="Mapa político de Colombia con sus departamentos. Las capitales de la región seleccionadas aparecen señaladas con puntos de colores."
+                width="2027"
+                height="2294" />
+              <div class="mapa__marcadores" id="mapa-marcadores" aria-hidden="true"></div>
+              <p class="mapa__error" id="mapa-error" hidden>Mapa no disponible.</p>
+            </div>
+            <figcaption class="mapa__credito">
+              <span class="mapa__leyenda" id="mapa-leyenda">Mapa de Colombia · 32 capitales</span>
+              <span class="mapa__fuente">
+                Fuente:
+                <a href="https://commons.wikimedia.org/wiki/File:Colombia_adm_location_map_(colored).svg"
+                   target="_blank" rel="noopener noreferrer">Wikimedia Commons</a>
+                · Milenioscuro ·
+                <a href="https://creativecommons.org/licenses/by-sa/4.0/"
+                   target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>
+              </span>
+            </figcaption>
+          </figure>
+        </fieldset>
+
+        <!-- Nivel de dificultad (HU-02) -->
+        <fieldset class="campo campo--grupo">
+          <legend class="campo__etiqueta">Nivel de dificultad</legend>
+          <div class="niveles" id="niveles" role="radiogroup" aria-label="Nivel de dificultad">
+            <label class="nivel" data-nivel="facil">
+              <input type="radio" name="nivel" value="facil" />
+              <span class="nivel__nombre">Fácil</span>
+              <span class="nivel__descripcion">4 a 6 letras · 2 pistas · sin tiempo · x1</span>
+            </label>
+            <label class="nivel" data-nivel="medio">
+              <input type="radio" name="nivel" value="medio" checked />
+              <span class="nivel__nombre">Medio</span>
+              <span class="nivel__descripcion">7 a 9 letras · 1 pista · sin tiempo · x2</span>
+            </label>
+            <label class="nivel" data-nivel="dificil">
+              <input type="radio" name="nivel" value="dificil" />
+              <span class="nivel__nombre">Difícil</span>
+              <span class="nivel__descripcion">10 o más letras · 0 pistas · 90 s · x3</span>
+            </label>
+          </div>
+          <p class="campo__ayuda" id="resumen-filtro" aria-live="polite"></p>
+        </fieldset>
+
+        <!-- Acciones -->
+        <div class="acciones">
+          <button type="submit" class="btn btn--primario btn--grande" id="btn-jugar">
+            Jugar
+          </button>
+          <a class="btn btn--secundario" href="pages/instrucciones.html">Instrucciones</a>
+          <a class="btn btn--secundario" href="pages/estadisticas.html">Estadísticas</a>
+        </div>
+      </form>
+    </section>
+
+    <!-- ----------------------------------------------------------
+         VISTA 2 — PANTALLA DE JUEGO
+         ------------------------------------------------------- -->
+    <section id="vista-juego" class="vista" aria-labelledby="titulo-tablero" hidden>
+      <h2 id="titulo-tablero" class="visually-hidden">Tablero de juego</h2>
+
+      <!-- HUD superior: vidas, puntaje, cronómetro -->
+      <div class="hud" role="status" aria-label="Estado de la partida">
+        <div class="hud__item">
+          <span class="hud__etiqueta">Vidas</span>
+          <span class="hud__valor" id="hud-vidas" aria-label="6 vidas restantes">6 / 6</span>
+        </div>
+        <div class="hud__item">
+          <span class="hud__etiqueta">Puntaje</span>
+          <span class="hud__valor" id="hud-puntaje">0</span>
+        </div>
+        <div class="hud__item">
+          <span class="hud__etiqueta">Tiempo</span>
+          <span class="hud__valor" id="hud-tiempo">--:--</span>
+        </div>
+        <div class="hud__item">
+          <span class="hud__etiqueta">Región</span>
+          <span class="hud__valor hud__valor--texto" id="hud-region">—</span>
+        </div>
+        <div class="hud__item">
+          <span class="hud__etiqueta">Nivel</span>
+          <span class="hud__valor hud__valor--texto" id="hud-nivel">—</span>
+        </div>
+      </div>
+
+      <div class="tablero">
+        <!-- Columna izquierda: dibujo progresivo en SVG -->
+        <div class="panel panel--dibujo">
+          <svg
+            id="dibujo-ahorcado"
+            class="ahorcado"
+            viewBox="0 0 320 320"
+            role="img"
+            aria-labelledby="ahorcado-titulo ahorcado-desc"
+            data-expresion="alegre"
+            preserveAspectRatio="xMidYMid meet">
+            <title id="ahorcado-titulo">Dibujo del ahorcado</title>
+            <desc id="ahorcado-desc">
+              Escena con un personaje bajo un potro de madera que se completa paso a paso
+              con cada error cometido.
+            </desc>
+
+            <defs>
+              <linearGradient id="grad-cielo" x1="0" y1="0" x2="0" y2="1">
+                <stop class="ahorcado__cielo-1" offset="0" stop-color="#DCEEFF" />
+                <stop class="ahorcado__cielo-2" offset="1" stop-color="#F8FCFF" />
+              </linearGradient>
+              <linearGradient id="grad-madera" x1="0" y1="0" x2="1" y2="0.3">
+                <stop offset="0" stop-color="#C68F52" />
+                <stop offset="0.45" stop-color="#95602E" />
+                <stop offset="1" stop-color="#6B421C" />
+              </linearGradient>
+              <linearGradient id="grad-camisa" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#FFE987" />
+                <stop offset="1" stop-color="#FCD116" />
+              </linearGradient>
+              <linearGradient id="grad-pantalon" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#4E7ED4" />
+                <stop offset="1" stop-color="#2C57A4" />
+              </linearGradient>
+              <filter id="sombra-escena" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="4" stdDeviation="5"
+                              flood-color="#12233F" flood-opacity="0.35" />
+              </filter>
+            </defs>
+
+            <!-- Escenario: cielo, sol, nubes y colinas -->
+            <g class="escena" aria-hidden="true">
+              <rect class="escena__fondo" x="2" y="2" width="316" height="316" rx="26"
+                    fill="url(#grad-cielo)" />
+              <g class="escena__sol">
+                <circle cx="56" cy="54" r="19" fill="#FFCF4A" />
+                <g stroke="#FFCF4A" stroke-width="5" stroke-linecap="round" opacity="0.85">
+                  <path d="M56 22 V12" />
+                  <path d="M56 86 V96" />
+                  <path d="M24 54 H14" />
+                  <path d="M98 54 H88" />
+                  <path d="M33 31 L26 24" />
+                  <path d="M79 77 L86 84" />
+                  <path d="M33 77 L26 84" />
+                  <path d="M79 31 L86 24" />
+                </g>
+              </g>
+              <g class="escena__nube" fill="#FFFFFF" opacity="0.92">
+                <ellipse cx="238" cy="62" rx="34" ry="13" />
+                <ellipse cx="258" cy="52" rx="22" ry="12" />
+                <ellipse cx="219" cy="53" rx="17" ry="10" />
+              </g>
+              <g class="escena__nube escena__nube--2" fill="#FFFFFF" opacity="0.75">
+                <ellipse cx="118" cy="34" rx="26" ry="10" />
+                <ellipse cx="133" cy="27" rx="16" ry="9" />
+              </g>
+              <path class="escena__colina"
+                    d="M2 272 Q76 240 168 264 T318 256 L318 318 L2 318 Z"
+                    fill="#CDEBB8" />
+              <path class="escena__colina escena__colina--frente"
+                    d="M2 292 Q92 266 186 290 T318 284 L318 318 L2 318 Z"
+                    fill="#A9DD90" />
+              <ellipse class="escena__sombra" cx="212" cy="290" rx="96" ry="11"
+                       fill="#12233F" opacity="0.16" />
+            </g>
+
+            <!-- 1. Base y poste -->
+            <g class="ahorcado__paso" data-paso="1" aria-hidden="true" filter="url(#sombra-escena)">
+              <rect x="142" y="276" width="112" height="17" rx="8.5" fill="url(#grad-madera)" />
+              <rect x="182" y="66" width="18" height="213" rx="9" fill="url(#grad-madera)" />
+              <circle cx="191" cy="160" r="3.2" fill="#EBD2AE" opacity="0.85" />
+              <circle cx="191" cy="246" r="3.2" fill="#EBD2AE" opacity="0.85" />
+            </g>
+
+            <!-- 2. Viga superior y contrafuerte -->
+            <g class="ahorcado__paso" data-paso="2" aria-hidden="true" filter="url(#sombra-escena)">
+              <rect x="182" y="66" width="96" height="17" rx="8.5" fill="url(#grad-madera)" />
+              <path d="M201 114 L242 85" stroke="url(#grad-madera)" stroke-width="14"
+                    stroke-linecap="round" fill="none" />
+            </g>
+
+            <!-- 3. Cuerda, cabeza y sombrero vueltiao -->
+            <g class="ahorcado__paso" data-paso="3" aria-hidden="true">
+              <path d="M258 83 q5 14 0 27" stroke="#E8CB92" stroke-width="7"
+                    stroke-linecap="round" fill="none" />
+              <circle cx="258" cy="113" r="4.5" fill="#E8CB92" />
+              <g class="personaje__cabeza">
+                <circle cx="258" cy="141" r="27" fill="#F8C9A0"
+                        stroke="#3C2A1E" stroke-width="3" />
+                <ellipse cx="258" cy="124" rx="47" ry="10.5" fill="#F7F3EA"
+                         stroke="#2B2B2B" stroke-width="3" />
+                <path d="M235 124 q23 -31 46 0" fill="#F7F3EA" stroke="#2B2B2B"
+                      stroke-width="3" />
+                <path d="M237 120 q21 -13 42 0" fill="none" stroke="#2B2B2B" stroke-width="4.5" />
+                <g class="cara__ojos">
+                  <circle class="ojo" cx="249" cy="145" r="3.8" fill="#2B2B2B" />
+                  <circle class="ojo" cx="267" cy="145" r="3.8" fill="#2B2B2B" />
+                </g>
+                <g class="cara__ojos-x" stroke="#2B2B2B" stroke-width="3.4" stroke-linecap="round">
+                  <path d="M245 141 l8 8 M253 141 l-8 8" />
+                  <path d="M263 141 l8 8 M271 141 l-8 8" />
+                </g>
+                <path class="boca boca--alegre" d="M248 154 q10 11 20 0" fill="none"
+                      stroke="#2B2B2B" stroke-width="3.4" stroke-linecap="round" />
+                <path class="boca boca--neutral" d="M250 157 H266" fill="none"
+                      stroke="#2B2B2B" stroke-width="3.4" stroke-linecap="round" />
+                <path class="boca boca--triste" d="M248 161 q10 -10 20 0" fill="none"
+                      stroke="#2B2B2B" stroke-width="3.4" stroke-linecap="round" />
+              </g>
+            </g>
+
+            <!-- 4. Cuello y torso con camiseta amarilla -->
+            <g class="ahorcado__paso" data-paso="4" aria-hidden="true">
+              <rect x="252" y="163" width="12" height="14" fill="#F8C9A0" />
+              <rect x="242" y="171" width="32" height="62" rx="14" fill="url(#grad-camisa)"
+                    stroke="#3C2A1E" stroke-width="3" />
+              <path d="M246 206 h24" stroke="#2E74B5" stroke-width="7" stroke-linecap="butt" />
+            </g>
+
+            <!-- 5. Brazos -->
+            <g class="ahorcado__paso" data-paso="5" aria-hidden="true">
+              <path d="M247 181 L217 207" stroke="url(#grad-camisa)" stroke-width="13"
+                    stroke-linecap="round" fill="none" />
+              <path d="M269 181 L299 207" stroke="url(#grad-camisa)" stroke-width="13"
+                    stroke-linecap="round" fill="none" />
+              <circle cx="215" cy="209" r="8.5" fill="#F8C9A0" stroke="#3C2A1E" stroke-width="2.6" />
+              <circle cx="301" cy="209" r="8.5" fill="#F8C9A0" stroke="#3C2A1E" stroke-width="2.6" />
+            </g>
+
+            <!-- 6. Piernas y zapatos -->
+            <g class="ahorcado__paso" data-paso="6" aria-hidden="true">
+              <path d="M252 230 L245 263" stroke="url(#grad-pantalon)" stroke-width="15"
+                    stroke-linecap="round" fill="none" />
+              <path d="M264 230 L271 263" stroke="url(#grad-pantalon)" stroke-width="15"
+                    stroke-linecap="round" fill="none" />
+              <ellipse cx="242" cy="269" rx="13" ry="7" fill="#3C2A1E" />
+              <ellipse cx="274" cy="269" rx="13" ry="7" fill="#3C2A1E" />
+            </g>
+          </svg>
+
+          <div class="intentos">
+            <div class="intentos__puntos" id="intentos-puntos" role="img"
+                 aria-label="0 de 6 errores cometidos" aria-hidden="false">
+              <span class="punto-error"></span>
+              <span class="punto-error"></span>
+              <span class="punto-error"></span>
+              <span class="punto-error"></span>
+              <span class="punto-error"></span>
+              <span class="punto-error"></span>
+            </div>
+            <p class="intentos__texto" id="intentos-texto">
+              Errores: <strong id="intentos-numero">0</strong> de <strong id="intentos-max">6</strong>
+            </p>
+          </div>
+          <p class="estado-palabra" id="estado-palabra" aria-live="polite"></p>
+        </div>
+
+        <!-- Columna derecha: pista, acciones y palabra oculta -->
+        <div class="panel panel--info">
+          <div class="fichas">
+            <div class="ficha">
+              <span class="ficha__etiqueta">Palabra</span>
+              <span class="ficha__valor" id="ficha-letras">0 letras</span>
+            </div>
+            <div class="ficha">
+              <span class="ficha__etiqueta">Pistas</span>
+              <span class="ficha__valor" id="ficha-pistas">0</span>
+            </div>
+            <div class="ficha">
+              <span class="ficha__etiqueta">Progreso</span>
+              <span class="ficha__valor" id="ficha-progreso">0 / 0</span>
+            </div>
+          </div>
+
+          <div class="caja-pista" id="caja-pista" hidden>
+            <p class="caja-pista__texto" id="caja-pista-texto"></p>
+          </div>
+
+          <div class="acciones acciones--juego">
+            <button type="button" class="btn btn--pista" id="btn-pista">
+              Usar pista (-15 pts)
+            </button>
+            <button type="button" class="btn btn--secundario" id="btn-nueva">Nueva palabra</button>
+            <a class="btn btn--secundario" href="../index.html" id="btn-menu">Menú</a>
+          </div>
+
+          <!-- Capital oculta -->
+          <div class="palabra" id="palabra" role="group" aria-label="Palabra oculta">
+            <!-- Generada por ui.js → renderPalabra() -->
+          </div>
+
+          <p class="leyenda-tipo" aria-hidden="true">Letras usadas: aciertos en <span class="leyenda leyenda--verde">verde</span>, errores en <span class="leyenda leyenda--rojo">rojo</span>.</p>
+        </div>
+      </div>
+
+      <!-- Teclado virtual A-Z + Ñ -->
+      <div class="teclado" id="teclado" role="group" aria-label="Teclado virtual de letras"></div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Recurso didáctico de ciencias sociales · Funciona 100% en tu navegador, sin servidor.</p>
+    <nav class="pie__nav" aria-label="Enlaces del pie">
+      <a href="index.html">Jugar</a>
+      <a href="pages/instrucciones.html">Instrucciones</a>
+      <a href="pages/estadisticas.html">Estadísticas</a>
+    </nav>
+  </footer>
+
+  <!-- ============================================================
+       MODAL DE RESULTADO
+       ============================================================ -->
+  <div class="modal" id="modal-resultado" hidden>
+    <div class="modal__fondo" data-cerrar-modal></div>
+    <div
+      class="modal__caja"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-titulo"
+      aria-describedby="modal-mensaje">
+      <div class="modal__cabecera" id="modal-cabecera">
+        <span class="modal__insignia" id="modal-insignia" aria-hidden="true">🏆</span>
+        <h2 class="modal__titulo" id="modal-titulo">¡Ganaste!</h2>
+      </div>
+
+      <p class="modal__mensaje" id="modal-mensaje">Adivinaste la capital.</p>
+
+      <dl class="modal__datos">
+        <div><dt>Capital</dt><dd id="modal-palabra">—</dd></div>
+        <div><dt>Departamento</dt><dd id="modal-departamento">—</dd></div>
+        <div><dt>Región</dt><dd id="modal-region">—</dd></div>
+        <div><dt>Nivel</dt><dd id="modal-nivel">—</dd></div>
+        <div><dt>Errores</dt><dd id="modal-errores">—</dd></div>
+        <div><dt>Tiempo</dt><dd id="modal-tiempo">—</dd></div>
+      </dl>
+
+      <div class="modal__puntaje">
+        <span class="modal__puntaje-etiqueta">Puntaje final</span>
+        <span class="modal__puntaje-valor" id="modal-puntaje">0</span>
+        <span class="modal__puntaje-detalle" id="modal-detalle">—</span>
+      </div>
+
+      <div class="modal__acciones">
+        <button type="button" class="btn btn--primario" id="btn-reintentar">Jugar otra vez</button>
+        <button type="button" class="btn btn--secundario" id="btn-ir-menu">Volver al menú</button>
+        <a class="btn btn--texto" href="pages/estadisticas.html">Ver estadísticas</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anuncios para lectores de pantalla (RNF-05) -->
+  <p id="anuncio" class="visually-hidden" role="status" aria-live="polite"></p>
+
+  <!-- Módulos de la aplicación (orden de dependencias) -->
+  <script src="js/palabras.js"></script>
+  <script src="js/almacenamiento.js"></script>
+  <script src="js/juego.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
